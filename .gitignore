@@ -1,0 +1,8 @@
+dbdata/
+opdata/
+openproject-data/
+pgdata/
+postgres-data/
+ngrok2.log
+*.log
+.env

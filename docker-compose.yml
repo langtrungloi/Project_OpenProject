@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    container_name: openproject_postgres_14
+    environment:
+      POSTGRES_DB: openproject
+      POSTGRES_USER: openproject
+      POSTGRES_PASSWORD: openproject123
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "54333:5432"
+    restart: unless-stopped
+
+  memcached:
+    image: memcached:1.6-alpine
+    container_name: openproject_memcached
+    restart: unless-stopped
+
+  openproject:
+    image: openproject/community:13.4.1
+    container_name: openproject_app_13_4
+    environment:
+      DATABASE_URL: "postgresql://openproject:openproject123@postgres:5432/openproject"
+      SECRET_KEY_BASE: "your-secret-key"
+      OPENPROJECT_CACHE__STORE: "memcache"
+      OPENPROJECT_CACHE__MEMCACHE__SERVER: "memcached:11211"
+    depends_on:
+      - postgres
+      - memcached
+    ports:
+      - "8686:80"
+    volumes:
+      - ./openproject-data:/var/lib/openproject
+    restart: unless-stopped

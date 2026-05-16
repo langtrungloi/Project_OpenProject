@@ -1,0 +1,9 @@
+version: "3"
+agent:
+  authtoken: 2qccQC6K5GXW61ALip9dVHDGfak_7yCTeTnFmXFQbtZhPkjyV
+tunnels:
+  web_service:
+    proto: http
+    addr: 192.168.210.21:8686
+    #addr: 0.0.0.0:8888
+    hostname: stupefactive-sona-kinematically.ngrok-free.app
