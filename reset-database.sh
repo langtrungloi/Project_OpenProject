@@ -3,13 +3,13 @@
 echo "Resetting OpenProject database..."
 
 # Dừng containers
-docker-compose down
+docker compose down
 
 # Xóa volume database
 sudo rm -rf postgres-data
 
 # Khởi động lại
-docker-compose up -d
+docker compose up -d
 
 echo "Waiting for database to initialize..."
 sleep 30

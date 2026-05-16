@@ -1,7 +1,7 @@
 #!/bin/bash
 # File: start-openproject.sh
 
-echo "🚀 Starting OpenProject 16.6 with PostgreSQL 17..."
+echo "🚀 Starting OpenProject 13.4.1 with PostgreSQL 14..."
 
 # Kiểm tra port đang sử dụng
 echo "🔍 Checking port availability..."
@@ -23,7 +23,7 @@ if ! command -v docker &> /dev/null; then
 fi
 
 # Kiểm tra Docker Compose
-if ! command -v docker-compose &> /dev/null; then
+if ! docker compose version &> /dev/null; then
     echo "❌ Docker Compose is not installed. Please install Docker Compose first."
     exit 1
 fi
@@ -37,34 +37,34 @@ fi
 
 # Khởi động services
 echo "📦 Pulling Docker images..."
-docker-compose pull
+docker compose pull
 
 echo "🔄 Starting containers..."
-docker-compose up -d
+docker compose up -d
 
 echo "⏳ Waiting for services to start..."
 sleep 30
 
 # Kiểm tra trạng thái
 echo "🔍 Checking services status..."
-docker-compose ps
+docker compose ps
 
 echo "📊 Checking PostgreSQL logs..."
-docker-compose logs postgres --tail=10
+docker compose logs postgres --tail=10
 
 echo "📋 Checking OpenProject logs..."
-docker-compose logs openproject --tail=10
+docker compose logs openproject --tail=10
 
 echo "✅ Setup completed!"
-echo "🌐 OpenProject is available at: http://localhost:8081"
-echo "🐘 PostgreSQL is running on: localhost:5433"
+echo "🌐 OpenProject is available at: http://localhost:8686"
+echo "🐘 PostgreSQL is running on: localhost:54333"
 echo ""
 echo "📝 Default credentials (first time setup):"
 echo "   Username: admin"
 echo "   Password: admin"
 echo ""
 echo "🔧 Useful commands:"
-echo "   View logs: docker-compose logs -f"
-echo "   Stop services: docker-compose down"
-echo "   Restart services: docker-compose restart"
-echo "   Check status: docker-compose ps"
+echo "   View logs: docker compose logs -f"
+echo "   Stop services: docker compose down"
+echo "   Restart services: docker compose restart"
+echo "   Check status: docker compose ps"

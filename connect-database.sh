@@ -7,4 +7,4 @@ echo "🔌 Connecting to PostgreSQL on port 54333..."
 psql -h localhost -p 54333 -U openproject -d openproject
 
 # Nếu không có psql client, sử dụng container
-# docker exec -it openproject_postgres_17 psql -U openproject -d openproject
+# docker exec -it openproject_postgres psql -U openproject -d openproject

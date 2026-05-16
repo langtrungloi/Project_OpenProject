@@ -2,16 +2,18 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres
-    container_name: openproject_postgres_14
+    image: postgres:14
+    container_name: openproject_postgres
     environment:
-      POSTGRES_DB: openproject
-      POSTGRES_USER: openproject
-      POSTGRES_PASSWORD: openproject123
+      POSTGRES_DB: ${POSTGRES_DB:-openproject}
+      POSTGRES_USER: ${POSTGRES_USER:-openproject}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-openproject123}
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+      - ./init-database.sql:/docker-entrypoint-initdb.d/init-database.sql
     ports:
-      - "54333:5432"
+      - "${POSTGRES_HOST_PORT:-54333}:5432"
     restart: unless-stopped
 
   memcached:
@@ -21,17 +23,26 @@ services:
 
   openproject:
     image: openproject/community:13.4.1
-    container_name: openproject_app_13_4
+    container_name: openproject_app
     environment:
-      DATABASE_URL: "postgresql://openproject:openproject123@postgres:5432/openproject"
-      SECRET_KEY_BASE: "your-secret-key"
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-openproject}:${POSTGRES_PASSWORD:-openproject123}@postgres:5432/${POSTGRES_DB:-openproject}"
+      SECRET_KEY_BASE: "${OPENPROJECT_SECRET_KEY_BASE}"
+      OPENPROJECT_HOST__NAME: "${OPENPROJECT_HOSTNAME:-localhost:8686}"
+      OPENPROJECT_HTTPS: "${OPENPROJECT_HTTPS:-false}"
       OPENPROJECT_CACHE__STORE: "memcache"
       OPENPROJECT_CACHE__MEMCACHE__SERVER: "memcached:11211"
+      SMTP_ADDRESS: "${SMTP_ADDRESS}"
+      SMTP_PORT: "${SMTP_PORT}"
+      SMTP_DOMAIN: "${OPENPROJECT_HOSTNAME}"
+      SMTP_AUTHENTICATION: "plain"
+      SMTP_USER_NAME: "${SMTP_USER_NAME}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD}"
+      SMTP_ENABLE__STARTTLS__AUTO: "true"
     depends_on:
       - postgres
       - memcached
     ports:
-      - "8686:80"
+      - "${OPENPROJECT_HOST_PORT:-8686}:80"
     volumes:
       - ./openproject-data:/var/lib/openproject
     restart: unless-stopped
