@@ -46,3 +46,19 @@ services:
     volumes:
       - ./openproject-data:/var/lib/openproject
     restart: unless-stopped
+    
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: openproject_ngrok
+    command: >
+      start --config /etc/ngrok.yml web_service
+    environment:
+      - NGROK_AUTHTOKEN=2qccQC6K5GXW61ALip9dVHDGfak_7yCTeTnFmXFQbtZhPkjyV
+      - OPENPROJECT_HTTPS=false               # nếu bạn muốn HTTP (đã có trong .env)
+    volumes:
+      - ./ngrok2.yml:/etc/ngrok.yml:ro        # gắn file cấu hình của bạn
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # cho phép container ngrok truy cập localhost của host
+    restart: unless-stopped
+    depends_on:
+      - openproject                           # chắc chắn OpenProject đã khởi động trước

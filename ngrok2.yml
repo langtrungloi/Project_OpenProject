@@ -4,6 +4,6 @@ agent:
 tunnels:
   web_service:
     proto: http
-    addr: 8686
+    addr: host.docker.internal:8686
     #addr: 0.0.0.0:8888
     hostname: stupefactive-sona-kinematically.ngrok-free.app
